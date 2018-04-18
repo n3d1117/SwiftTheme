@@ -7,6 +7,49 @@
 //
 
 import UIKit
+import BulletinBoard
+
+@objc public extension BulletinManager {
+    var theme_backgroundColor: ThemeColorPicker? {
+        get { return getThemePicker(self, "setBackgroundColor:") as? ThemeColorPicker }
+        set { setThemePicker(self, "setBackgroundColor:", newValue) }
+    }
+}
+
+@objc public extension BulletinAppearance {
+    var theme_actionButtonColor: ThemeColorPicker? {
+        get { return getThemePicker(self, "setActionButtonColor:") as? ThemeColorPicker }
+        set { setThemePicker(self, "setActionButtonColor:", newValue) }
+    }
+    var theme_actionButtonTitleColor: ThemeColorPicker? {
+        get { return getThemePicker(self, "setActionButtonTitleColor:") as? ThemeColorPicker }
+        set { setThemePicker(self, "setActionButtonTitleColor:", newValue) }
+    }
+    var theme_actionButtonBorderColor: ThemeColorPicker? {
+        get { return getThemePicker(self, "setActionButtonBorderColor:") as? ThemeColorPicker }
+        set { setThemePicker(self, "setActionButtonBorderColor:", newValue) }
+    }
+    var theme_alternativeButtonColor: ThemeColorPicker? {
+        get { return getThemePicker(self, "setAlternativeButtonColor:") as? ThemeColorPicker }
+        set { setThemePicker(self, "setAlternativeButtonColor:", newValue) }
+    }
+    var theme_alternativeButtonBorderColor: ThemeColorPicker? {
+        get { return getThemePicker(self, "setAlternativeButtonBorderColor:") as? ThemeColorPicker }
+        set { setThemePicker(self, "setAlternativeButtonBorderColor:", newValue) }
+    }
+    var theme_imageViewTintColor: ThemeColorPicker? {
+        get { return getThemePicker(self, "setImageViewTintColor:") as? ThemeColorPicker }
+        set { setThemePicker(self, "setImageViewTintColor:", newValue) }
+    }
+    var theme_titleTextColor: ThemeColorPicker? {
+        get { return getThemePicker(self, "setTitleTextColor:") as? ThemeColorPicker }
+        set { setThemePicker(self, "setTitleTextColor:", newValue) }
+    }
+    var theme_descriptionTextColor: ThemeColorPicker? {
+        get { return getThemePicker(self, "setDescriptionTextColor:") as? ThemeColorPicker }
+        set { setThemePicker(self, "setDescriptionTextColor:", newValue) }
+    }
+}
 
 @objc public extension UIView
 {
