@@ -1,6 +1,6 @@
 /**
  *  BulletinBoard
- *  Copyright (c) 2017 Alexis Aubry. Licensed under the MIT license.
+ *  Copyright (c) 2017 - present Alexis Aubry. Licensed under the MIT license.
  */
 
 import UIKit
@@ -10,32 +10,40 @@ import UIKit
  * standard components.
  */
 
-@objc open class BulletinInterfaceBuilder: NSObject {
+@objc open class BLTNInterfaceBuilder: NSObject {
+
+    /// The item for which the interface builder was created.
+    @objc public weak var item: BLTNItem?
 
     /// The appearance to use to generate the items.
-    @objc public let appearance: BulletinAppearance
+    @objc public let appearance: BLTNItemAppearance
 
     /// Creates a new interface builder.
-    @objc public required init(appearance: BulletinAppearance) {
+    @objc public required init(appearance: BLTNItemAppearance, item: BLTNItem) {
         self.appearance = appearance
+        self.item = item
     }
 
     /**
      * Creates a standard title label.
      */
 
-    @objc open func makeTitleLabel() -> UILabel {
+    @objc open func makeTitleLabel() -> BLTNTitleLabelContainer {
 
         let titleLabel = UILabel()
         titleLabel.textAlignment = .center
         titleLabel.textColor = appearance.titleTextColor
         titleLabel.accessibilityTraits |= UIAccessibilityTraitHeader
-        titleLabel.numberOfLines = 1
+        titleLabel.numberOfLines = 2
         titleLabel.adjustsFontSizeToFitWidth = true
+        titleLabel.lineBreakMode = .byWordWrapping
 
         titleLabel.font = appearance.makeTitleFont()
 
-        return titleLabel
+        let needsCloseButton = item?.isDismissable == true && item?.requiresCloseButton == true
+        let inset: CGFloat = needsCloseButton ? 12 + 30 : 0
+
+        return BLTNTitleLabelContainer(label: titleLabel, horizontalInset: inset)
 
     }
 
@@ -87,9 +95,10 @@ import UIKit
      * - parameter title: The title of the button.
      */
 
-    @objc open func makeActionButton(title: String) -> HighlightButtonWrapper {
+    @objc open func makeActionButton(title: String) -> BLTNHighlightButtonWrapper {
 
-        let actionButton = HighlightButton(type: .custom)
+        let actionButton = HighlightButton()
+        actionButton.cornerRadius = appearance.actionButtonCornerRadius
         actionButton.setBackgroundColor(appearance.actionButtonColor, forState: .normal)
         actionButton.setTitleColor(appearance.actionButtonTitleColor, for: .normal)
         actionButton.contentHorizontalAlignment = .center
@@ -97,7 +106,6 @@ import UIKit
         actionButton.setTitle(title, for: .normal)
         actionButton.titleLabel?.font = appearance.makeActionButtonFont()
 
-        actionButton.layer.cornerRadius = appearance.actionButtonCornerRadius
         actionButton.clipsToBounds = true
 
         if let color = appearance.actionButtonBorderColor {
@@ -105,7 +113,7 @@ import UIKit
           actionButton.layer.borderWidth = appearance.actionButtonBorderWidth
         }
 
-        let wrapper = HighlightButtonWrapper(button: actionButton)
+        let wrapper = BLTNHighlightButtonWrapper(button: actionButton)
         wrapper.setContentHuggingPriority(UILayoutPriorityDefaultLow, for: .horizontal)
 
         let heightConstraint = wrapper.heightAnchor.constraint(equalToConstant: 55)
@@ -126,13 +134,13 @@ import UIKit
 
     @objc open func makeAlternativeButton(title: String) -> UIButton {
 
-        let alternativeButton = UIButton(type: .system)
+        let alternativeButton = RoundedButton()
+        alternativeButton.cornerRadius = appearance.alternativeButtonCornerRadius
         alternativeButton.setTitle(title, for: .normal)
-        alternativeButton.setTitleColor(appearance.alternativeButtonColor, for: .normal)
+        alternativeButton.setTitleColor(appearance.alternativeButtonTitleColor, for: .normal)
         alternativeButton.titleLabel?.font = appearance.makeAlternativeButtonFont()
 
         if let color = appearance.alternativeButtonBorderColor {
-          alternativeButton.layer.cornerRadius = appearance.alternativeButtonCornerRadius
           alternativeButton.clipsToBounds = true
           alternativeButton.layer.borderColor = color.cgColor
           alternativeButton.layer.borderWidth = appearance.alternativeButtonBorderWidth
@@ -157,6 +165,48 @@ import UIKit
         buttonsStack.spacing = spacing
 
         return buttonsStack
+
+    }
+
+    /**
+     * Wraps a view without intrinsic content size inside a view with an intrinsic content size.
+     *
+     * This method allows you to display view without an intrinsic content size, such as collection views,
+     * inside stack views; by using the returned `BLTNContentView` view.
+     *
+     * - parameter view: The view to wrap in the container.
+     * - parameter width: The width of the content. Pass `nil` if the content has a flexible width.
+     * - parameter height: The height of the content. Pass `nil` if the content has a flexible height.
+     * - parameter position: The position of `view` inside its parent.
+     *
+     * - returns: The view that contains the `view` and an intrinsic content size. You can add the returned
+     * view to a stack view.
+     */
+
+    @objc open func wrapView(_ view: UIView, width: NSNumber?, height: NSNumber?, position: BLTNViewPosition) -> BLTNContainerView {
+
+        let container = BLTNContainerView()
+
+        container.contentSize = CGSize(width: width.flatMap(CGFloat.init) ?? UIViewNoIntrinsicMetric,
+                                       height: height.flatMap(CGFloat.init) ?? UIViewNoIntrinsicMetric)
+
+        container.setChildView(view) { parent, child in
+
+            switch position {
+            case .centered:
+                child.centerXAnchor.constraint(equalTo: parent.centerXAnchor).isActive = true
+                child.centerYAnchor.constraint(equalTo: parent.centerYAnchor).isActive = true
+
+            case .pinnedToEdges:
+                child.leadingAnchor.constraint(equalTo: parent.leadingAnchor).isActive = true
+                child.trailingAnchor.constraint(equalTo: parent.trailingAnchor).isActive = true
+                child.topAnchor.constraint(equalTo: parent.topAnchor).isActive = true
+                child.bottomAnchor.constraint(equalTo: parent.bottomAnchor).isActive = true
+            }
+
+        }
+
+        return container
 
     }
 

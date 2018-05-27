@@ -1,6 +1,6 @@
 /**
  *  BulletinBoard
- *  Copyright (c) 2017 Alexis Aubry. Licensed under the MIT license.
+ *  Copyright (c) 2017 - present Alexis Aubry. Licensed under the MIT license.
  */
 
 import UIKit
@@ -9,7 +9,7 @@ import UIKit
  * An object that defines the appearance of bulletin items.
  */
 
-@objc open class BulletinAppearance: NSObject {
+@objc public class BLTNItemAppearance: NSObject {
 
     // MARK: - Color Customization
 
@@ -25,8 +25,8 @@ import UIKit
     /// The border width to apply to action button.
     @objc public var actionButtonBorderWidth: CGFloat = 1.0
 
-    /// The tint color to apply to the alternative button.
-    @objc public var alternativeButtonColor: UIColor = #colorLiteral(red: 0, green: 0.4784313725, blue: 1, alpha: 1)
+    /// The title color to apply to the alternative button (default blue).
+    @objc public var alternativeButtonTitleColor: UIColor = #colorLiteral(red: 0, green: 0.4784313725, blue: 1, alpha: 1)
 
     /// The border color to apply to the alternative button.
     @objc public var alternativeButtonBorderColor: UIColor? = nil
@@ -92,13 +92,13 @@ import UIKit
 
 // MARK: - Font Factories
 
-extension BulletinAppearance {
+extension BLTNItemAppearance {
 
     /**
      * Creates the font for title labels.
      */
 
-    open func makeTitleFont() -> UIFont {
+    @objc public func makeTitleFont() -> UIFont {
 
         if let titleFontDescriptor = self.titleFontDescriptor {
             return UIFont(descriptor: titleFontDescriptor, size: titleFontSize)
@@ -112,7 +112,7 @@ extension BulletinAppearance {
      * Creates the font for description labels.
      */
 
-    open func makeDescriptionFont() -> UIFont {
+    @objc public func makeDescriptionFont() -> UIFont {
 
         let size = shouldUseCompactDescriptionText ? compactDescriptionFontSize : descriptionFontSize
 
@@ -128,7 +128,7 @@ extension BulletinAppearance {
      * Creates the font for action buttons.
      */
 
-    open func makeActionButtonFont() -> UIFont {
+    @objc public func makeActionButtonFont() -> UIFont {
 
         if let buttonFontDescriptor = self.buttonFontDescriptor {
             return UIFont(descriptor: buttonFontDescriptor, size: actionButtonFontSize)
@@ -142,7 +142,7 @@ extension BulletinAppearance {
      * Creates the font for alternative buttons.
      */
 
-    open func makeAlternativeButtonFont() -> UIFont {
+    @objc public func makeAlternativeButtonFont() -> UIFont {
 
         if let buttonFontDescriptor = self.buttonFontDescriptor {
             return UIFont(descriptor: buttonFontDescriptor, size: alternativeButtonFontSize)
@@ -160,7 +160,7 @@ extension BulletinAppearance {
  * Styles of status bar to use with bulletin items.
  */
 
-@objc public enum BulletinStatusBarAppearance: Int {
+@objc public enum BLTNStatusBarAppearance: Int {
 
     /// The status bar is hidden.
     case hidden

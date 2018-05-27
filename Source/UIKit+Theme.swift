@@ -7,16 +7,16 @@
 //
 
 import UIKit
-import BulletinBoard
+import BLTNBoard
 
-@objc public extension BulletinManager {
+@objc public extension BLTNItemManager {
     var theme_backgroundColor: ThemeColorPicker? {
         get { return getThemePicker(self, "setBackgroundColor:") as? ThemeColorPicker }
         set { setThemePicker(self, "setBackgroundColor:", newValue) }
     }
 }
 
-@objc public extension BulletinAppearance {
+@objc public extension BLTNItemAppearance {
     var theme_actionButtonColor: ThemeColorPicker? {
         get { return getThemePicker(self, "setActionButtonColor:") as? ThemeColorPicker }
         set { setThemePicker(self, "setActionButtonColor:", newValue) }

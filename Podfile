@@ -12,5 +12,5 @@ end
 
 target 'SwiftTheme' do
     use_frameworks!
-    pod 'BulletinBoard', :git => 'https://github.com/alexaubry/BulletinBoard.git'
+    pod 'BulletinBoard', :git => 'https://github.com/alexaubry/BulletinBoard.git', :branch => 'v2'
 end

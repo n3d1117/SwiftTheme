@@ -1,6 +1,6 @@
 /**
  *  BulletinBoard
- *  Copyright (c) 2017 Alexis Aubry. Licensed under the MIT license.
+ *  Copyright (c) 2017 - present Alexis Aubry. Licensed under the MIT license.
  */
 
 import UIKit
@@ -16,20 +16,20 @@ import UIKit
  *
  * You must call the `prepare` method before displaying the view controller.
  *
- * `BulletinManager` must only be used from the main thread.
+ * `BLTNItemManager` must only be used from the main thread.
  */
 
-@objc public final class BulletinManager: NSObject {
+@objc public final class BLTNItemManager: NSObject {
 
     /// Bulletin view controller.
-    fileprivate var viewController: BulletinViewController!
+    fileprivate var bulletinController: BulletinViewController!
 
     // MARK: - Background
 
     /**
      * The background color of the bulletin card. Defaults to white.
      *
-     * Set this value before calling `prepare`. Changing it after will have no effect.
+     * Set this value before presenting the bulletin. Changing it after will have no effect.
      */
 
     @objc public var backgroundColor: UIColor = #colorLiteral(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)
@@ -37,25 +37,25 @@ import UIKit
     /**
      * The style of the view covering the content. Defaults to `.dimmed`.
      *
-     * Set this value before calling `prepare`. Changing it after will have no effect.
+     * Set this value before presenting the bulletin. Changing it after will have no effect.
      */
 
-    @objc public var backgroundViewStyle: BulletinBackgroundViewStyle = .dimmed
+    @objc public var backgroundViewStyle: BLTNBackgroundViewStyle = .dimmed
 
     // MARK: - Status Bar
 
     /**
      * The style of status bar to use with the bulltin. Defaults to `.automatic`.
      *
-     * Set this value before calling `prepare`. Changing it after will have no effect.
+     * Set this value before presenting the bulletin. Changing it after will have no effect.
      */
 
-    @objc public var statusBarAppearance: BulletinStatusBarAppearance = .automatic
+    @objc public var statusBarAppearance: BLTNStatusBarAppearance = .automatic
 
     /**
      * The style of status bar animation. Defaults to `.fade`.
      *
-     * Set this value before calling `prepare`. Changing it after will have no effect.
+     * Set this value before presenting the bulletin. Changing it after will have no effect.
      */
 
     @objc public var statusBarAnimation: UIStatusBarAnimation = .fade
@@ -63,7 +63,7 @@ import UIKit
     /**
      * The home indicator for iPhone X should be hidden or not. Defaults to false.
      *
-     * Set this value before calling `prepare`. Changing it after will have no effect.
+     * Set this value before presenting the bulletin. Changing it after will have no effect.
      */
 
     @objc public var hidesHomeIndicator: Bool = false
@@ -73,10 +73,10 @@ import UIKit
     /**
      * The spacing between the edge of the screen and the edge of the card. Defaults to regular.
      *
-     * Set this value before calling `prepare`. Changing it after will have no effect.
+     * Set this value before presenting the bulletin. Changing it after will have no effect.
      */
 
-    @objc public var cardPadding: BulletinPadding = .regular
+    @objc public var edgeSpacing: BLTNSpacing = .regular
 
     /**
      * The rounded corner radius of the bulletin card. Defaults to 12, and 36 on iPhone X.
@@ -101,14 +101,16 @@ import UIKit
 
     // MARK: - Private Properties
 
-    var currentItem: BulletinItem
+    var currentItem: BLTNItem
 
-    fileprivate let rootItem: BulletinItem
-    fileprivate var itemsStack: [BulletinItem]
-    fileprivate var previousItem: BulletinItem?
+    fileprivate let rootItem: BLTNItem
+    fileprivate var itemsStack: [BLTNItem]
+    fileprivate var previousItem: BLTNItem?
 
     fileprivate var isPrepared: Bool = false
     fileprivate var isPreparing: Bool = false
+    fileprivate var shouldDisplayActivityIndicator: Bool = false
+    fileprivate var lastActivityIndicatorColor: UIColor = .black
 
     // MARK: - Initialization
 
@@ -118,7 +120,7 @@ import UIKit
      * - parameter rootItem: The first item to display.
      */
 
-    @objc public init(rootItem: BulletinItem) {
+    @objc public init(rootItem: BLTNItem) {
 
         self.rootItem = rootItem
         self.itemsStack = []
@@ -126,16 +128,26 @@ import UIKit
 
     }
 
+    deinit {
+
+        tearDownItemsChain(startingAt: self.rootItem)
+
+        for item in itemsStack {
+            tearDownItemsChain(startingAt: item)
+        }
+
+    }
+
     @available(*, unavailable, message: "Use init(rootItem:) instead.")
     override init() {
-        fatalError("BulletinManager.init is unavailable. Use init(rootItem:) instead.")
+        fatalError("BLTNItemManager.init is unavailable. Use init(rootItem:) instead.")
     }
 
 }
 
 // MARK: - Interacting with the Bulletin
 
-extension BulletinManager {
+extension BLTNItemManager {
 
     /**
      * Prepares the bulletin interface and displays the root item.
@@ -143,24 +155,25 @@ extension BulletinManager {
      * This method must be called before any other interaction with the bulletin.
      */
 
-    @objc public func prepare() {
+    fileprivate func prepare() {
 
         assertIsMainThread()
 
-        viewController = BulletinViewController()
-        viewController.manager = self
+        bulletinController = BulletinViewController()
+        bulletinController.manager = self
 
-        viewController.modalPresentationStyle = .overFullScreen
-        viewController.transitioningDelegate = viewController
-        viewController.loadBackgroundView()
-        viewController.setNeedsStatusBarAppearanceUpdate()
+        bulletinController.modalPresentationStyle = .overFullScreen
+        bulletinController.transitioningDelegate = bulletinController
+        bulletinController.loadBackgroundView()
+        bulletinController.setNeedsStatusBarAppearanceUpdate()
 
         if #available(iOS 11.0, *) {
-            viewController.setNeedsUpdateOfHomeIndicatorAutoHidden()
+            bulletinController.setNeedsUpdateOfHomeIndicatorAutoHidden()
         }
 
         isPrepared = true
         isPreparing = true
+        shouldDisplayActivityIndicator = rootItem.shouldStartWithActivityIndicator
 
         refreshCurrentItemInterface()
         isPreparing = false
@@ -168,12 +181,21 @@ extension BulletinManager {
     }
 
     /**
-     * Prepares the bulletin interface and present it.
+     * Presents a view controller above the bulletin card.
+     *
+     * This is useful if you want to present an alert or a Safari view contoller in response to user
+     * action.
+     *
+     * - parameter viewController: The view controller to present.
+     * - parameter animated: Whether presentation should be animated.
+     * - parameter completion: An optional completion block to run after presentation
+     * has completed. Defaults to `nil`.
      */
 
-    @objc public func prepareAndPresent(above: UIViewController) {
-        prepare()
-        presentBulletin(above: above)
+    @objc(presentViewControllerAboveBulletin:animated:completion:)
+    public func present(_ viewController: UIViewController, animated: Bool, completion: (() -> Void)? = nil) {
+        assertIsPrepared()
+        self.bulletinController.present(viewController, animated: animated, completion: completion)
     }
 
     /**
@@ -196,10 +218,10 @@ extension BulletinManager {
         assertIsPrepared()
         assertIsMainThread()
 
-        let contentView = viewController.contentView
+        let contentView = bulletinController.contentView
         let initialRetainCount = CFGetRetainCount(contentView)
 
-        let result = try transform(viewController.contentView)
+        let result = try transform(bulletinController.contentView)
         let finalRetainCount = CFGetRetainCount(contentView)
 
         precondition(initialRetainCount == finalRetainCount,
@@ -207,22 +229,6 @@ extension BulletinManager {
 
         return result
 
-    }
-
-    /**
-     * Presents a view controller above the bulletin.
-     *
-     * This method must only be called if a bulletin is currently presented.
-     *
-     * - parameter viewController: The view controller to present. For example, an alert or a Safari View
-     * Controller.
-     * - parameter animated: Whether presentation should be animated.
-     * - parameter completion: An optional block to call after presentation completes.
-     */
-
-    @objc(presentViewControllerAboveBulletin:animated:completion:)
-    public func presentAboveBulletin(_ viewController: UIViewController, animated: Bool, completion: (() -> Void)?) {
-        self.viewController.present(viewController, animated: animated, completion: completion)
     }
 
     /**
@@ -243,7 +249,10 @@ extension BulletinManager {
         assertIsPrepared()
         assertIsMainThread()
 
-        viewController.displayActivityIndicator(color: color)
+        shouldDisplayActivityIndicator = true
+        lastActivityIndicatorColor = color
+
+        bulletinController.displayActivityIndicator(color: color)
 
     }
 
@@ -259,8 +268,9 @@ extension BulletinManager {
         assertIsPrepared()
         assertIsMainThread()
 
-        viewController.swipeInteractionController?.cancelIfNeeded()
-        viewController.hideActivityIndicator(showContentStack: true)
+        shouldDisplayActivityIndicator = false
+        bulletinController.swipeInteractionController?.cancelIfNeeded()
+        refreshCurrentItemInterface(elementsChanged: false)
 
     }
 
@@ -269,7 +279,7 @@ extension BulletinManager {
      * - parameter item: The item to display.
      */
 
-    @objc public func push(item: BulletinItem) {
+    @objc public func push(item: BLTNItem) {
 
         assertIsPrepared()
         assertIsMainThread()
@@ -278,6 +288,8 @@ extension BulletinManager {
         itemsStack.append(item)
 
         currentItem = item
+
+        shouldDisplayActivityIndicator = item.shouldStartWithActivityIndicator
         refreshCurrentItemInterface()
 
     }
@@ -304,6 +316,8 @@ extension BulletinManager {
         }
 
         self.currentItem = currentItem
+
+        shouldDisplayActivityIndicator = currentItem.shouldStartWithActivityIndicator
         refreshCurrentItemInterface()
 
     }
@@ -326,23 +340,24 @@ extension BulletinManager {
 
         itemsStack = []
 
+        shouldDisplayActivityIndicator = rootItem.shouldStartWithActivityIndicator
         refreshCurrentItemInterface()
 
     }
 
     /**
-     * Displays the next item, if the `nextItem` property of the current item is set.
+     * Displays the next item, if the `next` property of the current item is set.
      *
-     * - warning: If you call this method but `nextItem` is `nil`, an exception will be raised.
+     * - warning: If you call this method but `next` is `nil`, an exception will be raised.
      */
 
     @objc public func displayNextItem() {
 
-        guard let nextItem = currentItem.nextItem else {
-            preconditionFailure("Calling BulletinManager.displayNextItem, but the current item has no nextItem.")
+        guard let next = currentItem.next else {
+            preconditionFailure("Calling BLTNItemManager.displayNextItem, but the current item has no nextItem.")
         }
 
-        push(item: nextItem)
+        push(item: next)
 
     }
 
@@ -350,7 +365,7 @@ extension BulletinManager {
 
 // MARK: - Presentation / Dismissal
 
-extension BulletinManager {
+extension BLTNItemManager {
 
     /**
      * Presents the bulletin above the specified view controller.
@@ -360,16 +375,28 @@ extension BulletinManager {
      * - parameter completion: An optional block to execute after presentation. Default to `nil`.
      */
 
-    @objc(presentBulletinAboveViewController:animated:completion:)
-    public func presentBulletin(above presentingVC: UIViewController,
-                                      animated: Bool = true,
-                                      completion: (() -> Void)? = nil) {
+    @objc(showBulletinAboveViewController:animated:completion:)
+    public func showBulletin(above presentingVC: UIViewController,
+                                       animated: Bool = true,
+                                     completion: (() -> Void)? = nil) {
+
+        self.prepare()
+
+        let isDetached = bulletinController.presentingViewController == nil
+        assert(isDetached, "Attempt to present a Bulletin that is already presented.")
 
         assertIsPrepared()
         assertIsMainThread()
+        bulletinController.loadView()
 
-        viewController.modalPresentationCapturesStatusBarAppearance = true
-        presentingVC.present(viewController, animated: animated, completion: completion)
+        let refreshActivityIndicator = shouldDisplayActivityIndicator && isDetached
+
+        if refreshActivityIndicator {
+            bulletinController.displayActivityIndicator(color: lastActivityIndicatorColor)
+        }
+
+        bulletinController.modalPresentationCapturesStatusBarAppearance = true
+        presentingVC.present(bulletinController, animated: animated, completion: completion)
 
     }
 
@@ -391,7 +418,7 @@ extension BulletinManager {
         currentItem.tearDown()
         currentItem.manager = nil
 
-        viewController.dismiss(animated: animated) {
+        bulletinController.dismiss(animated: animated) {
             self.completeDismissal()
         }
 
@@ -405,26 +432,20 @@ extension BulletinManager {
 
     @nonobjc func completeDismissal() {
 
-        currentItem.dismissalHandler?(currentItem)
+        currentItem.onDismiss()
 
-        for arrangedSubview in viewController.contentStackView.arrangedSubviews {
-            viewController.contentStackView.removeArrangedSubview(arrangedSubview)
+        for arrangedSubview in bulletinController.contentStackView.arrangedSubviews {
+            bulletinController.contentStackView.removeArrangedSubview(arrangedSubview)
             arrangedSubview.removeFromSuperview()
         }
 
-        viewController.backgroundView = nil
-        viewController.manager = nil
-        viewController.transitioningDelegate = nil
+        bulletinController.backgroundView = nil
+        bulletinController.manager = nil
+        bulletinController.transitioningDelegate = nil
 
-        viewController = nil
+        bulletinController = nil
 
         currentItem = self.rootItem
-        tearDownItemsChain(startingAt: self.rootItem)
-
-        for item in itemsStack {
-            tearDownItemsChain(startingAt: item)
-        }
-
         itemsStack.removeAll()
 
     }
@@ -433,38 +454,51 @@ extension BulletinManager {
 
 // MARK: - Transitions
 
-extension BulletinManager {
+extension BLTNItemManager {
+
+    var needsCloseButton: Bool {
+        return currentItem.isDismissable && currentItem.requiresCloseButton
+    }
 
     /// Refreshes the interface for the current item.
-    fileprivate func refreshCurrentItemInterface() {
+    fileprivate func refreshCurrentItemInterface(elementsChanged: Bool = true) {
 
-        viewController.swipeInteractionController?.cancelIfNeeded()
+        bulletinController.isDismissable = false
+        bulletinController.swipeInteractionController?.cancelIfNeeded()
+        bulletinController.refreshSwipeInteractionController()
 
-        viewController.isDismissable = false
-        viewController.refreshSwipeInteractionController()
+        let showActivityIndicator = self.shouldDisplayActivityIndicator
+        let contentAlpha: CGFloat =  showActivityIndicator ? 0 : 1
 
         // Tear down old item
 
-        let oldArrangedSubviews = viewController.contentStackView.arrangedSubviews
+        let oldArrangedSubviews = bulletinController.contentStackView.arrangedSubviews
         let oldHideableArrangedSubviews = recursiveArrangedSubviews(in: oldArrangedSubviews)
 
-        previousItem?.tearDown()
-        previousItem?.manager = nil
-        previousItem = nil
-
-        currentItem.manager = self
+        if elementsChanged {
+            previousItem?.tearDown()
+            previousItem?.manager = nil
+            previousItem = nil
+        }
 
         // Create new views
 
         let newArrangedSubviews = currentItem.makeArrangedSubviews()
         let newHideableArrangedSubviews = recursiveArrangedSubviews(in: newArrangedSubviews)
 
-        for arrangedSubview in newHideableArrangedSubviews {
-            arrangedSubview.isHidden = isPreparing ? false : true
-        }
+        if elementsChanged {
 
-        for arrangedSubview in newArrangedSubviews {
-            viewController.contentStackView.addArrangedSubview(arrangedSubview)
+            currentItem.setUp()
+            currentItem.manager = self
+
+            for arrangedSubview in newHideableArrangedSubviews {
+                arrangedSubview.isHidden = isPreparing ? false : true
+            }
+
+            for arrangedSubview in newArrangedSubviews {
+                bulletinController.contentStackView.addArrangedSubview(arrangedSubview)
+            }
+
         }
 
         // Animate transition
@@ -476,7 +510,9 @@ extension BulletinManager {
 
         hideSubviewsAnimationPhase.block = {
 
-            self.viewController.hideActivityIndicator(showContentStack: false)
+            if !showActivityIndicator {
+                self.bulletinController.hideActivityIndicator()
+            }
 
             for arrangedSubview in oldArrangedSubviews {
                 arrangedSubview.alpha = 0
@@ -502,50 +538,62 @@ extension BulletinManager {
 
         }
 
-        displayNewItemsAnimationPhase.completionHandler = {
-            self.viewController.contentStackView.alpha = 1
-        }
-
         let finalAnimationPhase = AnimationPhase(relativeDuration: 1/3, curve: .linear)
 
         finalAnimationPhase.block = {
 
-            for arrangedSubview in newArrangedSubviews {
-                arrangedSubview.alpha = 1
+            let currentElements = elementsChanged ? newArrangedSubviews : oldArrangedSubviews
+            self.bulletinController.contentStackView.alpha = contentAlpha
+            self.bulletinController.updateCloseButton(isRequired: self.needsCloseButton && !showActivityIndicator)
+
+            for arrangedSubview in currentElements {
+                arrangedSubview.alpha = contentAlpha
             }
 
         }
 
         finalAnimationPhase.completionHandler = {
 
-            self.viewController.isDismissable = self.currentItem.isDismissable
+            self.bulletinController.isDismissable = self.currentItem.isDismissable && (showActivityIndicator == false)
 
-            for arrangedSubview in oldArrangedSubviews {
-                self.viewController.contentStackView.removeArrangedSubview(arrangedSubview)
-                arrangedSubview.removeFromSuperview()
+            if elementsChanged {
+
+                self.currentItem.onDisplay()
+
+                for arrangedSubview in oldArrangedSubviews {
+                    self.bulletinController.contentStackView.removeArrangedSubview(arrangedSubview)
+                    arrangedSubview.removeFromSuperview()
+                }
+
             }
 
             UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, newArrangedSubviews.first)
 
         }
 
-        transitionAnimationChain.add(hideSubviewsAnimationPhase)
-        transitionAnimationChain.add(displayNewItemsAnimationPhase)
-        transitionAnimationChain.add(finalAnimationPhase)
+        // Perform animation
 
+        if elementsChanged {
+            transitionAnimationChain.add(hideSubviewsAnimationPhase)
+            transitionAnimationChain.add(displayNewItemsAnimationPhase)
+        } else {
+            bulletinController.hideActivityIndicator()
+        }
+
+        transitionAnimationChain.add(finalAnimationPhase)
         transitionAnimationChain.start()
 
     }
 
     /// Tears down every item on the stack starting from the specified item.
-    fileprivate func tearDownItemsChain(startingAt item: BulletinItem) {
+    fileprivate func tearDownItemsChain(startingAt item: BLTNItem) {
 
         item.tearDown()
         item.manager = nil
 
-        if let nextItem = item.nextItem {
-            tearDownItemsChain(startingAt: nextItem)
-            item.nextItem = nil
+        if let next = item.next {
+            tearDownItemsChain(startingAt: next)
+            item.next = nil
         }
 
     }
@@ -575,10 +623,10 @@ extension BulletinManager {
 
 // MARK: - Utilities
 
-extension BulletinManager {
+extension BLTNItemManager {
 
     fileprivate func assertIsMainThread() {
-        precondition(Thread.isMainThread, "BulletinManager must only be used from the main thread.")
+        precondition(Thread.isMainThread, "BLTNItemManager must only be used from the main thread.")
     }
 
     fileprivate func assertIsPrepared() {
