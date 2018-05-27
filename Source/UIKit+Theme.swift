@@ -75,6 +75,13 @@ import BulletinBoard
     }
     #endif
 }
+@objc public extension UIBarItem
+{
+    func theme_setTitleTextAttributes(_ picker: ThemeDictionaryPicker?, forState state: UIControlState) {
+        let statePicker = makeStatePicker(self, "setTitleTextAttributes:forState:", picker, state)
+        setThemePicker(self, "setTitleTextAttributes:forState:", statePicker)
+    }
+}
 @objc public extension UIBarButtonItem
 {
     var theme_tintColor: ThemeColorPicker? {
