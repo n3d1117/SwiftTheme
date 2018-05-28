@@ -29,9 +29,9 @@ import BLTNBoard
         get { return getThemePicker(self, "setActionButtonBorderColor:") as? ThemeColorPicker }
         set { setThemePicker(self, "setActionButtonBorderColor:", newValue) }
     }
-    var theme_alternativeButtonColor: ThemeColorPicker? {
-        get { return getThemePicker(self, "setAlternativeButtonColor:") as? ThemeColorPicker }
-        set { setThemePicker(self, "setAlternativeButtonColor:", newValue) }
+    var theme_alternativeButtonTitleColor: ThemeColorPicker? {
+        get { return getThemePicker(self, "setAlternativeButtonTitleColor:") as? ThemeColorPicker }
+        set { setThemePicker(self, "setAlternativeButtonTitleColor:", newValue) }
     }
     var theme_alternativeButtonBorderColor: ThemeColorPicker? {
         get { return getThemePicker(self, "setAlternativeButtonBorderColor:") as? ThemeColorPicker }
