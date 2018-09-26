@@ -34,12 +34,12 @@ extension NSObject {
         guard responds(to: sel)           else { return }
         guard let value = picker?.value() else { return }
         
-        if let statePicker = picker as? ThemeStatePicker {
-            let setState = unsafeBitCast(method(for: sel), to: setValueForStateIMP.self)
-            statePicker.values.forEach { setState(self, sel, $1.value()! as AnyObject, UIControl.State(rawValue: $0)) }
-        }
+//        if let statePicker = picker as? ThemeStatePicker {
+//            let setState = unsafeBitCast(method(for: sel), to: setValueForStateIMP.self)
+//            statePicker.values.forEach { setState(self, sel, $1.value()! as AnyObject, UIControl.State(rawValue: $0)) }
+//        }
         
-        else if let statusBarStylePicker = picker as? ThemeStatusBarStylePicker {
+        if let statusBarStylePicker = picker as? ThemeStatusBarStylePicker {
             #if os(iOS)
             let setStatusBarStyle = unsafeBitCast(method(for: sel), to: setStatusBarStyleValueIMP.self)
             setStatusBarStyle(self, sel, value as! UIStatusBarStyle, statusBarStylePicker.animated)
@@ -78,7 +78,7 @@ extension NSObject {
     
     fileprivate typealias setCGColorValueIMP        = @convention(c) (NSObject, Selector, CGColor) -> Void
     fileprivate typealias setCGFloatValueIMP        = @convention(c) (NSObject, Selector, CGFloat) -> Void
-    fileprivate typealias setValueForStateIMP       = @convention(c) (NSObject, Selector, AnyObject, UIControl.State) -> Void
+    //fileprivate typealias setValueForStateIMP       = @convention(c) (NSObject, Selector, AnyObject, UIControl.State) -> Void
     fileprivate typealias setKeyboardValueIMP       = @convention(c) (NSObject, Selector, UIKeyboardAppearance) -> Void
     fileprivate typealias setActivityStyleValueIMP  = @convention(c) (NSObject, Selector, UIActivityIndicatorView.Style) -> Void
     #if os(iOS)
