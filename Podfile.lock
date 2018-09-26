@@ -1,28 +1,18 @@
 PODS:
-  - BulletinBoard (2.0.0)
-  - MBProgressHUD (1.0.0)
-  - SSZipArchive (2.0.8)
+  - BulletinBoard (2.0.2)
+  - MBProgressHUD (1.1.0)
+  - SSZipArchive (2.1.4)
 
 DEPENDENCIES:
-  - BulletinBoard (from `https://github.com/alexaubry/BulletinBoard.git`, branch `v2`)
+  - BulletinBoard
   - MBProgressHUD
   - SSZipArchive
 
-EXTERNAL SOURCES:
-  BulletinBoard:
-    :branch: v2
-    :git: https://github.com/alexaubry/BulletinBoard.git
-
-CHECKOUT OPTIONS:
-  BulletinBoard:
-    :commit: 1494ba3b235fefea38fa99ce29c2dcb0b10bd565
-    :git: https://github.com/alexaubry/BulletinBoard.git
-
 SPEC CHECKSUMS:
-  BulletinBoard: 57e0b53fea8398905331175c8f3891b0d2213f87
-  MBProgressHUD: 4890f671c94e8a0f3cf959aa731e9de2f036d71a
-  SSZipArchive: e6ab66e1936fac7e3b5073e9f5eb364d91dfbfc7
+  BulletinBoard: a4a3022789e5202167127c3231975313c1d76c51
+  MBProgressHUD: e7baa36a220447d8aeb12769bf0585582f3866d9
+  SSZipArchive: 41455d4b8d2b6ab93990820b50dc697c2554a322
 
-PODFILE CHECKSUM: ee289994b0747e7571578eef817683ebdc144bbf
+PODFILE CHECKSUM: e5ae1b16f2c669874c9cffb82c5c8c4e80755377
 
 COCOAPODS: 1.4.0

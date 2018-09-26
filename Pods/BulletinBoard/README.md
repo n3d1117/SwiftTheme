@@ -1,4 +1,4 @@
-# BulletinBoard Beta
+# BulletinBoard
 
 [![CI Status](https://travis-ci.org/alexaubry/BulletinBoard.svg?branch=master)](https://travis-ci.org/alexaubry/BulletinBoard)
 [![Version](https://img.shields.io/cocoapods/v/BulletinBoard.svg?style=flat)](https://cocoapods.org/pods/BulletinBoard)
@@ -25,7 +25,7 @@ Here are some screenshots showing what you can build with BulletinBoard:
 
 ## Demo
 
-A demo project is included in the `BulletinBoard` workspace. It demonstrates how to: 
+A demo project is included in the `BulletinBoard` workspace. It demonstrates how to:
 
 - integrate the library (setup, data flow)
 - create standard page cards
@@ -70,7 +70,7 @@ BulletinBoard is fully compatible with Objective-C.
 To import it in your Objective-C app, just add this line at the top of your files:
 
 ~~~objc
-@import BLTNBoard; 
+@import BLTNBoard;
 ~~~
 
 ## Usage
@@ -258,11 +258,11 @@ Several styles are available in the `BulletinBackgroundViewStyle` enum:
 
 ## Dismissal
 
-If you set the `isDismissable` property to `true`, the user will be able to dismiss the bulletin by tapping outside of the card or by swiping the card down. This property defaults to `true`. You should set this property to `false` if completing the task is required, and should not be avoided by the user. 
+If you set the `isDismissable` property to `true`, the user will be able to dismiss the bulletin by tapping outside of the card or by swiping the card down. This property defaults to `true`. You should set this property to `false` if completing the task is required, and should not be avoided by the user.
 
 By default, a close button will be displayed when the item can be dismissed. If you don't want this behavior, you can set the `requiresCloseButton` property to `false`. This is useful when the bulletin already provides an action button to close the item (such as a “Done“ button).
 
-![Dimming View](https://raw.githubusercontent.com/alexaubry/BulletinBoard/master/.assets/demo_background_styles.png)
+![Dismissal](https://raw.githubusercontent.com/alexaubry/BulletinBoard/master/.assets/demo_close_button.png)
 
 ## Creating Custom Items
 
@@ -289,7 +289,11 @@ Make sure to read these guides before getting started:
 
 Feel free to submit a PR if you’re using this library in your apps.
 
-- [SpdrVision mobile](https://itunes.apple.com/it/app/spdrvision-mobile/id1260166539?mt=8) - A simple way to watch Italian television on macOS and iOS by Gianpiero Spinelli
+- [Bayes SMS](https://geo.itunes.apple.com/us/app/bayes-sms/id1281197214?mt=12)
+- [Fluidics](https://geo.itunes.apple.com/us/app/fluidics/id1330261345?lmt=8)
+- [nSuns 5/3/1](https://geo.itunes.apple.com/us/app/nsuns-5-3-1/id1265494052?mt=8)
+- [SpdrVision mobile](https://geo.itunes.apple.com/it/app/spdrvision-mobile/id1260166539?mt=8)
+- [Views • News Redesigned](https://geo.itunes.apple.com/us/app/views-news-redesigned/id1322754821?ls=1&mt=8)
 
 ## Author
 
