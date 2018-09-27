@@ -34,10 +34,10 @@ extension NSObject {
         guard responds(to: sel)           else { return }
         guard let value = picker?.value() else { return }
         
-//        if let statePicker = picker as? ThemeStatePicker {
-//            let setState = unsafeBitCast(method(for: sel), to: setValueForStateIMP.self)
-//            statePicker.values.forEach { setState(self, sel, $1.value()! as AnyObject, UIControl.State(rawValue: $0)) }
-//        }
+        if let statePicker = picker as? ThemeStatePicker {
+            let setState = unsafeBitCast(method(for: sel), to: (@convention(c) (NSObject, Selector, AnyObject, UIControl.State) -> Void).self)
+            statePicker.values.forEach { setState(self, sel, $1.value()! as AnyObject, UIControl.State(rawValue: $0)) }
+        }
         
         if let statusBarStylePicker = picker as? ThemeStatusBarStylePicker {
             #if os(iOS)
