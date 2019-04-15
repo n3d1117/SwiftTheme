@@ -1,5 +1,6 @@
 # BulletinBoard
 
+[![CI Status](https://dev.azure.com/alexaubry/BulletinBoard/_apis/build/status/alexaubry.BulletinBoard)](https://dev.azure.com/alexaubry/BulletinBoard/_build/latest?definitionId=3)
 [![CI Status](https://travis-ci.org/alexaubry/BulletinBoard.svg?branch=master)](https://travis-ci.org/alexaubry/BulletinBoard)
 [![Version](https://img.shields.io/cocoapods/v/BulletinBoard.svg?style=flat)](https://cocoapods.org/pods/BulletinBoard)
 [![License](https://img.shields.io/cocoapods/l/BulletinBoard.svg?style=flat)](https://cocoapods.org/pods/BulletinBoard)
@@ -19,9 +20,9 @@ Here are some screenshots showing what you can build with BulletinBoard:
 
 ## Requirements
 
-- Xcode 9 and later
+- Xcode 10 and later
 - iOS 9 and later
-- Swift 3.2 and later
+- Swift 4.2 and later
 
 ## Demo
 
@@ -90,9 +91,9 @@ With this root item, you need to create a `BLTNManager`. We recommend putting it
 ~~~swift
 class ViewController: UIViewController {
 
-    lazy var bulletinManager: BLTNManager = {
+    lazy var bulletinManager: BLTNItemManager = {
         let rootItem: BLTNItem = // ... create your item here
-        return BLTNManager(rootItem: rootItem)
+        return BLTNItemManager(rootItem: rootItem)
     }()
 
 }
@@ -150,7 +151,7 @@ You can customize both color and fonts. You need to change these before you pres
 ~~~swift
 let greenColor = UIColor(red: 0.294, green: 0.85, blue: 0.392, alpha: 1)
 page.appearance.actionButtonColor = greenColor
-page.appearance.alternativeButtonColor = greenColor
+page.appearance.alternativeButtonTitleColor = greenColor
 page.appearance.actionButtonTitleColor = .white
 ~~~
 
@@ -247,7 +248,7 @@ You can customize the background view by changing the `backgroundViewStyle` prop
 
 ~~~swift
 manager.backgroundViewStyle = .blurredExtraLight
-manager.prepare()
+manager.showBulletin(above: self)
 ~~~
 
 Several styles are available in the `BulletinBackgroundViewStyle` enum:
@@ -268,8 +269,6 @@ By default, a close button will be displayed when the item can be dismissed. If 
 
 To create custom bulletin items, create a class that implements the `BLTNItem` protocol. It is usually easier to subclass `BLTNPageItem` and implement one of the hook methods to provide your custom views to display with standard elements.
 
-See the [Creating a Custom Item](guides/Creating%20a%20Custom%20Item.md) guide to learn more.
-
 ## Internals
 
 BulletinBoard uses stack views and Auto Layout to display and manage cards. It automatically adapts to changes in width and height. iPad and iPhone X are supported out of the box.
@@ -289,6 +288,7 @@ Make sure to read these guides before getting started:
 
 Feel free to submit a PR if you’re using this library in your apps.
 
+- [Babelgum Translator](https://geo.itunes.apple.com/us/app/babelgum-translator/id1412706772?mt=8)
 - [Bayes SMS](https://geo.itunes.apple.com/us/app/bayes-sms/id1281197214?mt=12)
 - [Fluidics](https://geo.itunes.apple.com/us/app/fluidics/id1330261345?lmt=8)
 - [nSuns 5/3/1](https://geo.itunes.apple.com/us/app/nsuns-5-3-1/id1265494052?mt=8)

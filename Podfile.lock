@@ -1,18 +1,33 @@
 PODS:
-  - BulletinBoard (2.0.2)
+  - BulletinBoard (3.0.0)
   - MBProgressHUD (1.1.0)
   - SSZipArchive (2.1.4)
 
 DEPENDENCIES:
-  - BulletinBoard
+  - BulletinBoard (from `https://github.com/mathieudutour/BulletinBoard.git`, branch `f/swift-5`)
   - MBProgressHUD
   - SSZipArchive
 
+SPEC REPOS:
+  https://github.com/cocoapods/specs.git:
+    - MBProgressHUD
+    - SSZipArchive
+
+EXTERNAL SOURCES:
+  BulletinBoard:
+    :branch: f/swift-5
+    :git: https://github.com/mathieudutour/BulletinBoard.git
+
+CHECKOUT OPTIONS:
+  BulletinBoard:
+    :commit: 2487e20bf0a281e5a03b6291636ad54039eef17f
+    :git: https://github.com/mathieudutour/BulletinBoard.git
+
 SPEC CHECKSUMS:
-  BulletinBoard: a4a3022789e5202167127c3231975313c1d76c51
+  BulletinBoard: 5aace70b6878c7284bf60bde0bd75335b6252fd8
   MBProgressHUD: e7baa36a220447d8aeb12769bf0585582f3866d9
   SSZipArchive: 41455d4b8d2b6ab93990820b50dc697c2554a322
 
-PODFILE CHECKSUM: e5ae1b16f2c669874c9cffb82c5c8c4e80755377
+PODFILE CHECKSUM: 0ec49d6a50e85ad1edd732b9854dc3af52227bce
 
-COCOAPODS: 1.4.0
+COCOAPODS: 1.6.1

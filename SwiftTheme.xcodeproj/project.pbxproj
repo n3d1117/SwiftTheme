@@ -651,7 +651,6 @@
 				186C86371C857AA900A5FFEA /* Frameworks */,
 				186C86381C857AA900A5FFEA /* Resources */,
 				83CE11A2B500A46E52ADDC0E /* [CP] Embed Pods Frameworks */,
-				0D6253AF05BB26FAE8C17D3F /* [CP] Copy Pods Resources */,
 				A3AABE981FF4861A00482FF1 /* Embed Frameworks */,
 			);
 			buildRules = (
@@ -673,7 +672,6 @@
 				18D642A91C53613400DADEC5 /* Frameworks */,
 				18D642AA1C53613400DADEC5 /* Headers */,
 				18D642AB1C53613400DADEC5 /* Resources */,
-				CB95EE0308970A6BCEE38ADA /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -879,21 +877,6 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		0D6253AF05BB26FAE8C17D3F /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-PlistDemo/Pods-PlistDemo-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
 		13AEE057E5394F798FF72101 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -936,7 +919,7 @@
 			files = (
 			);
 			inputPaths = (
-				"${SRCROOT}/Pods/Target Support Files/Pods-PlistDemo/Pods-PlistDemo-frameworks.sh",
+				"${PODS_ROOT}/Target Support Files/Pods-PlistDemo/Pods-PlistDemo-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/MBProgressHUD/MBProgressHUD.framework",
 				"${BUILT_PRODUCTS_DIR}/SSZipArchive/SSZipArchive.framework",
 				"${BUILT_PRODUCTS_DIR}/BulletinBoard/BLTNBoard.framework",
@@ -949,22 +932,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-PlistDemo/Pods-PlistDemo-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		CB95EE0308970A6BCEE38ADA /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-SwiftTheme/Pods-SwiftTheme-resources.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-PlistDemo/Pods-PlistDemo-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
