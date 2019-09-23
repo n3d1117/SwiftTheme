@@ -1,33 +1,33 @@
 PODS:
-  - BulletinBoard (3.0.0)
+  - BulletinBoard (4.0.0)
   - MBProgressHUD (1.1.0)
   - SSZipArchive (2.1.4)
 
 DEPENDENCIES:
-  - BulletinBoard (from `https://github.com/mathieudutour/BulletinBoard.git`, branch `f/swift-5`)
+  - BulletinBoard (from `https://github.com/alexaubry/BulletinBoard.git`, branch `master`)
   - MBProgressHUD
   - SSZipArchive
 
 SPEC REPOS:
-  https://github.com/cocoapods/specs.git:
+  trunk:
     - MBProgressHUD
     - SSZipArchive
 
 EXTERNAL SOURCES:
   BulletinBoard:
-    :branch: f/swift-5
-    :git: https://github.com/mathieudutour/BulletinBoard.git
+    :branch: master
+    :git: https://github.com/alexaubry/BulletinBoard.git
 
 CHECKOUT OPTIONS:
   BulletinBoard:
-    :commit: 2487e20bf0a281e5a03b6291636ad54039eef17f
-    :git: https://github.com/mathieudutour/BulletinBoard.git
+    :commit: 01c753352d329f38dd9a5c5cce114aa3d5d8b749
+    :git: https://github.com/alexaubry/BulletinBoard.git
 
 SPEC CHECKSUMS:
-  BulletinBoard: 5aace70b6878c7284bf60bde0bd75335b6252fd8
+  BulletinBoard: 2e312814ff70f3af364a6dda3857a801f6d2adb6
   MBProgressHUD: e7baa36a220447d8aeb12769bf0585582f3866d9
   SSZipArchive: 41455d4b8d2b6ab93990820b50dc697c2554a322
 
-PODFILE CHECKSUM: 0ec49d6a50e85ad1edd732b9854dc3af52227bce
+PODFILE CHECKSUM: 1c39d0d2c7e8dc09b437f126a6b9874b76e79249
 
-COCOAPODS: 1.6.1
+COCOAPODS: 1.8.0

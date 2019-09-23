@@ -77,7 +77,7 @@ import BLTNBoard
 }
 @objc public extension UIBarItem
 {
-    func theme_setTitleTextAttributes(_ picker: ThemeDictionaryPicker?, forState state: UIControl.State) {
+    func theme_setTitleTextAttributes(_ picker: ThemeStringAttributesPicker?, forState state: UIControl.State) {
         let statePicker = makeStatePicker(self, "setTitleTextAttributes:forState:", picker, state)
         setThemePicker(self, "setTitleTextAttributes:forState:", statePicker)
     }
@@ -107,6 +107,10 @@ import BLTNBoard
         get { return getThemePicker(self, "setShadowColor:") as? ThemeColorPicker }
         set { setThemePicker(self, "setShadowColor:", newValue) }
     }
+    var theme_textAttributes: ThemeStringAttributesPicker? {
+        get { return getThemePicker(self, "updateTextAttributes:") as? ThemeStringAttributesPicker }
+        set { setThemePicker(self, "updateTextAttributes:", newValue) }
+    }
 }
 @objc public extension UINavigationBar
 {
@@ -120,12 +124,12 @@ import BLTNBoard
         get { return getThemePicker(self, "setBarTintColor:") as? ThemeColorPicker }
         set { setThemePicker(self, "setBarTintColor:", newValue) }
     }
-    var theme_titleTextAttributes: ThemeDictionaryPicker? {
-        get { return getThemePicker(self, "setTitleTextAttributes:") as? ThemeDictionaryPicker }
+    var theme_titleTextAttributes: ThemeStringAttributesPicker? {
+        get { return getThemePicker(self, "setTitleTextAttributes:") as? ThemeStringAttributesPicker }
         set { setThemePicker(self, "setTitleTextAttributes:", newValue) }
     }
-    var theme_largeTitleTextAttributes: ThemeDictionaryPicker? {
-        get { return getThemePicker(self, "setLargeTitleTextAttributes:") as? ThemeDictionaryPicker }
+    var theme_largeTitleTextAttributes: ThemeStringAttributesPicker? {
+        get { return getThemePicker(self, "setLargeTitleTextAttributes:") as? ThemeStringAttributesPicker }
         set { setThemePicker(self, "setLargeTitleTextAttributes:", newValue) }
     }
 }
@@ -135,6 +139,10 @@ import BLTNBoard
     var theme_barStyle: ThemeBarStylePicker? {
         get { return getThemePicker(self, "setBarStyle:") as? ThemeBarStylePicker }
         set { setThemePicker(self, "setBarStyle:", newValue) }
+    }
+    var theme_unselectedItemTintColor: ThemeColorPicker? {
+        get { return getThemePicker(self, "setUnselectedItemTintColor:") as? ThemeColorPicker }
+        set { setThemePicker(self, "setUnselectedItemTintColor:", newValue) }
     }
     #endif
     var theme_barTintColor: ThemeColorPicker? {
@@ -171,8 +179,8 @@ import BLTNBoard
         get { return getThemePicker(self, "setTextColor:") as? ThemeColorPicker }
         set { setThemePicker(self, "setTextColor:", newValue) }
     }
-    var theme_placeholderAttributes: ThemeDictionaryPicker? {
-        get { return getThemePicker(self, "updatePlaceholderAttributes:") as? ThemeDictionaryPicker }
+    var theme_placeholderAttributes: ThemeStringAttributesPicker? {
+        get { return getThemePicker(self, "updatePlaceholderAttributes:") as? ThemeStringAttributesPicker }
         set { setThemePicker(self, "updatePlaceholderAttributes:", newValue) }
     }
 }
@@ -334,9 +342,16 @@ import BLTNBoard
 }
 @objc public extension UIRefreshControl
 {
-    var theme_titleAttributes: ThemeDictionaryPicker? {
-        get { return getThemePicker(self, "updateTitleAttributes:") as? ThemeDictionaryPicker }
+    var theme_titleAttributes: ThemeStringAttributesPicker? {
+        get { return getThemePicker(self, "updateTitleAttributes:") as? ThemeStringAttributesPicker }
         set { setThemePicker(self, "updateTitleAttributes:", newValue) }
+    }
+}
+@objc public extension UIVisualEffectView
+{
+    var theme_effect: ThemeVisualEffectPicker? {
+        get { return getThemePicker(self, "setEffect:") as? ThemeVisualEffectPicker }
+        set { setThemePicker(self, "setEffect:", newValue) }
     }
 }
 #endif

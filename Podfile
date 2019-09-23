@@ -12,6 +12,5 @@ end
 
 target 'SwiftTheme' do
     use_frameworks!
-    # use a BulletinBoard version that is compatible with swift 5
-    pod 'BulletinBoard', :git => 'https://github.com/mathieudutour/BulletinBoard.git', :branch => 'f/swift-5'
+    pod 'BulletinBoard', :git => 'https://github.com/alexaubry/BulletinBoard.git', :branch => 'master'
 end
